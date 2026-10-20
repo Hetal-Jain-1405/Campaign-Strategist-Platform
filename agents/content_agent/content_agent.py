@@ -147,7 +147,7 @@ def content_agent():
             'messages' : [
                 {
                     'role': 'user',
-                    'content' : 'strategy_report: {strategy_report}',
+                    'content' : 'For Environment Day, I want to create a campaign for my coffee shop that attracts Gen Z college students while raising awareness about environmentally sustainable coffee and eco-friendly practices.strategy_report: {strategy_report}',
                 }
             ]
         }
