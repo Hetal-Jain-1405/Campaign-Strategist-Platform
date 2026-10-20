@@ -211,6 +211,7 @@ dependencies = [
     { name = "langchain" },
     { name = "langchain-google-genai" },
     { name = "langchain-tavily" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
@@ -220,6 +221,7 @@ requires-dist = [
     { name = "langchain", specifier = ">=1.4.6" },
     { name = "langchain-google-genai", specifier = ">=4.4.2" },
     { name = "langchain-tavily", specifier = ">=0.2.18" },
+    { name = "pydantic", specifier = ">=2.14.1" },
 ]
 
 [[package]]
