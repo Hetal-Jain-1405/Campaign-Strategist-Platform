@@ -1,3 +1,5 @@
+from langchain_core.tools import tool
+
 from langchain.agents import create_agent
 from langchain_tavily import TavilySearch
 from models.research_models import ResearchReport
@@ -54,7 +56,7 @@ Return only the structured research report.
 """
 
 
-
+@tool
 def search_tool(query: str):
     """Search the web for information relevant to the research query."""
 

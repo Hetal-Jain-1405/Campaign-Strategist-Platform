@@ -289,7 +289,6 @@ research_report = {
   }
 }
 
-
 SYSTEM_PROMPT = """
 You are the Strategy Agent for an AI Campaign Strategist Platform.
 
@@ -326,7 +325,6 @@ Populate all required fields. Use empty lists or null for missing
 optional information where permitted by the schema.
 Do not add fields outside the schema or include commentary.
 """
-
 
 
 def strategy_agent():

@@ -448,7 +448,6 @@ strategy_report = {
   ]
 }
 
-
 SYSTEM_PROMPT = """
 You are the Media Planner Agent for an AI Campaign Strategist Platform.
 
