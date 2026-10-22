@@ -7,11 +7,13 @@ requires-python = ">=3.12"
 dependencies = [
     "dotenv>=0.9.9",
     "google-genai>=2.31.0",
+    "ipython>=9.17.1",
     "langchain>=1.4.6",
     "langchain-core>=1.6.12",
     "langchain-google-genai>=4.4.2",
     "langchain-tavily>=0.2.18",
     "langgraph>=1.2.16",
+    "langgraph-supervisor>=0.0.31",
     "pydantic>=2.14.1",
     "python-dotenv>=1.2.4",
     "requests>=2.34.2",

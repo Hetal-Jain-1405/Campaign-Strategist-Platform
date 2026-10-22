@@ -1,21 +1,29 @@
-import os
+
 from dotenv import load_dotenv
 
-from agents.strategy_agent.strategy_agent import strategy_agent
-from agents.research_agent.research_agent import research_agent
-from agents.content_agent.content_agent import content_agent
-from agents.visual_agent.visual_agent import visual_agent
-from agents.media_planner_agent.media_planner_agent import media_planner_agent
+from agents.orchestrator.orchestrator import chain
+from serializer import serialize
 
 load_dotenv()
 
+
 def main():
-    print("Hello from backend!")
-    # research_agent()
-    # strategy_agent()
-    # content_agent()
-    # visual_agent()
-    media_planner_agent()
+    campaign_description = input("Enter the campaign description: ")
+
+    state = chain.invoke({
+        "user_query": campaign_description
+    })
+
+    for key in [
+        "research_report",
+        "campaign_strategy",
+        "content_assets",
+        "visual_assets",
+        "media_plan",
+    ]:
+        print(f"\n\n{key} output:")
+        print(serialize(state[key]))
+
 
 if __name__ == "__main__":
     main()
