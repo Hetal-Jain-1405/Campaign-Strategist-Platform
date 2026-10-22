@@ -1,5 +1,6 @@
 from langchain.agents import create_agent
 from models.strategy_models import CampaignStrategy
+from agents.provider import get_chat_model
 
 
 SYSTEM_PROMPT = """
@@ -40,7 +41,7 @@ def strategy_agent():
     """Create and return the configured Strategy Agent."""
 
     agent = create_agent(
-        model="google_genai:gemini-3.6-flash",
+        model=get_chat_model("strategy"),
         system_prompt=SYSTEM_PROMPT,
         response_format=CampaignStrategy,
     )

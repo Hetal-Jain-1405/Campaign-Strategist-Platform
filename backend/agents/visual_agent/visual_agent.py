@@ -1,6 +1,7 @@
 from langchain.agents import create_agent
 
 from agents.visual_agent.generate_campaign_image import generate_campaign_image
+from agents.provider import get_chat_model
 from models.visual_models import VisualAssets
 
 SYSTEM_PROMPT = """
@@ -38,7 +39,7 @@ def visual_agent():
     """Create and return the configured Visual Agent."""
 
     agent = create_agent(
-        model="google_genai:gemini-3.5-flash",
+        model=get_chat_model("visual"),
         system_prompt=SYSTEM_PROMPT,
         tools=[generate_campaign_image],
         response_format=VisualAssets,

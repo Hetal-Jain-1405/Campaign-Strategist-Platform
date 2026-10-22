@@ -11,6 +11,7 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
+import { useAuth } from "@/components/auth-provider";
 
 export function Logo() {
   return (
@@ -38,6 +39,11 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user, loading, signOut } = useAuth();
+  if (loading || !user) {
+    if (!loading && typeof window !== "undefined") window.location.replace("/login");
+    return <main className="min-h-screen bg-[#f8fafc]" />;
+  }
   const nav = [
     ["/dashboard", "Dashboard", LayoutDashboard],
     ["/campaigns/new", "Create campaign", Plus],
@@ -86,12 +92,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="avatar">AM</div>
             <div className="min-w-0 text-left">
               <p className="truncate text-[12px] font-semibold text-[#172033]">
-                Alex Morgan
+                {user.user_metadata.full_name ?? user.email ?? "Workspace user"}
               </p>
               <p className="truncate text-[11px] text-slate-400">
-                alex@northstar.co
+                {user.email}
               </p>
             </div>
+            <button
+              type="button"
+              onClick={() => void signOut()}
+              className="ml-auto text-[11px] text-slate-400 hover:text-slate-700"
+            >
+              Sign out
+            </button>
           </div>
         </div>
       </aside>

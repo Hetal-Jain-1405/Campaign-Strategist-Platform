@@ -1,6 +1,7 @@
 from langchain.agents import create_agent
 
 from models.media_planner_models import MediaPlan
+from agents.provider import get_chat_model
 
 SYSTEM_PROMPT = """
 You are the Media Planner Agent for an AI Campaign Strategist Platform.
@@ -52,7 +53,7 @@ def media_planner_agent():
     """Create and return the configured Media Planner Agent."""
 
     agent = create_agent(
-        model="google_genai:gemini-3.1-flash",
+        model=get_chat_model("media_planner"),
         system_prompt=SYSTEM_PROMPT,
         response_format=MediaPlan,
     )

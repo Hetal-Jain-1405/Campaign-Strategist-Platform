@@ -1,13 +1,13 @@
 
 from dotenv import load_dotenv
 
-from agents.orchestrator.orchestrator import chain
-from serializer import serialize
-
 load_dotenv()
 
 
 def main():
+    from agents.orchestrator.orchestrator import chain
+    from serializer import serialize
+
     campaign_description = input("Enter the campaign description: ")
 
     state = chain.invoke({

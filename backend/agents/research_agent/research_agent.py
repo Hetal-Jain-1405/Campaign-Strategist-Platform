@@ -1,7 +1,9 @@
 from langchain_core.tools import tool
 from langchain.agents import create_agent
 from langchain_tavily import TavilySearch
+import os
 from models.research_models import ResearchReport
+from agents.provider import get_chat_model
 
 
 SYSTEM_PROMPT = """
@@ -42,6 +44,9 @@ Do not create advertising copy or a media plan.
 def search_tool(query: str):
     """Search the web for campaign research."""
 
+    if os.getenv("RESEARCH_MODE", "offline").strip().lower() == "offline":
+        return []
+
     tavily = TavilySearch(max_results=3)
 
     results = tavily.invoke({"query": query})
@@ -51,7 +56,7 @@ def search_tool(query: str):
 
 def research_agent():
     agent = create_agent(
-        model="google_genai:gemini-3.5-flash",
+        model=get_chat_model("research"),
         tools=[search_tool],
         system_prompt=SYSTEM_PROMPT,
         response_format=ResearchReport,

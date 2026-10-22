@@ -9,10 +9,11 @@ from langchain_core.tools import tool
 
 load_dotenv()
 
-WORKER_URL = os.environ["CLOUDFLARE_WORKER_URL"]
-WORKER_API_KEY = os.environ["CLOUDFLARE_WORKER_API_KEY"]
+WORKER_URL = os.getenv("CLOUDFLARE_WORKER_URL", "")
+WORKER_API_KEY = os.getenv("CLOUDFLARE_WORKER_API_KEY", "")
 
-OUTPUT_DIR = Path("media/campaigns")
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / "media" / "campaigns"
+FIXTURE_IMAGES = sorted(OUTPUT_DIR.glob("*.png"))
 
 
 @tool
@@ -21,7 +22,19 @@ def generate_campaign_image(prompt: str) -> str:
     the Cloudflare Worker API. Save the image locally and
     return the path to the generated image."""
 
-    print(f'tool is called with prompt')
+    mode = os.getenv("VISUAL_MODE", "fixture").strip().lower()
+    if mode == "fixture":
+        if not FIXTURE_IMAGES:
+            raise RuntimeError("VISUAL_MODE=fixture requires images in backend/media/campaigns")
+        fixture = FIXTURE_IMAGES[len(prompt) % len(FIXTURE_IMAGES)]
+        return f"/media/campaigns/{fixture.name}"
+    if mode != "cloudflare":
+        raise ValueError("VISUAL_MODE must be 'fixture' or 'cloudflare'")
+    if not WORKER_URL or not WORKER_API_KEY:
+        raise RuntimeError(
+            "VISUAL_MODE=cloudflare requires CLOUDFLARE_WORKER_URL and "
+            "CLOUDFLARE_WORKER_API_KEY"
+        )
 
     response = requests.post(
         WORKER_URL,
@@ -42,7 +55,5 @@ def generate_campaign_image(prompt: str) -> str:
     output_path = OUTPUT_DIR / filename
 
     output_path.write_bytes(response.content)
-
-    print(f'Image generated and saved')
 
     return str(output_path)

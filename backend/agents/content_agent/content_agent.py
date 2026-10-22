@@ -1,6 +1,7 @@
 from langchain.agents import create_agent
 
 from models.content_models import ContentAssets
+from agents.provider import get_chat_model
 
 SYSTEM_PROMPT = """
 You are the Content Agent for an AI Campaign Strategist Platform.
@@ -60,7 +61,7 @@ def content_agent():
     """Create and return the configured Content Agent."""
 
     agent = create_agent(
-        model="google_genai:gemini-3.1-flash-lite",
+        model=get_chat_model("content"),
         system_prompt=SYSTEM_PROMPT,
         response_format=ContentAssets,
     )

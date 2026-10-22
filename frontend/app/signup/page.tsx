@@ -3,31 +3,42 @@ import Link from "next/link";
 import { useState } from "react";
 import { Check, Eye, EyeOff, Sparkles } from "lucide-react";
 import { AuthShell } from "@/components/campaign-app";
+import { getSupabaseClient } from "@/lib/supabase";
 
 export default function SignupPage() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const password = String(data.get("password"));
+    const formData = new FormData(e.currentTarget);
+    const password = String(formData.get("password"));
     if (
-      !data.get("name") ||
-      !data.get("email") ||
+      !formData.get("name") ||
+      !formData.get("email") ||
       !password ||
-      !data.get("confirm")
+      !formData.get("confirm")
     )
       return setError("Please complete every field.");
-    if (!String(data.get("email")).includes("@"))
+    if (!String(formData.get("email")).includes("@"))
       return setError("Enter a valid email address.");
     if (password.length < 8)
       return setError("Password must be at least 8 characters.");
-    if (password !== data.get("confirm"))
+    if (password !== formData.get("confirm"))
       return setError("Passwords do not match.");
-    if (!data.get("terms")) return setError("Accept the terms to continue.");
+    if (!formData.get("terms")) return setError("Accept the terms to continue.");
     setError("");
-    setSuccess(true);
+    const { data: signupData, error: signupError } = await getSupabaseClient().auth.signUp({
+      email: String(formData.get("email")),
+      password,
+      options: { data: { full_name: String(formData.get("name")) } },
+    });
+    if (signupError) {
+      setError(signupError.message);
+      return;
+    }
+    setSuccess(!signupData.session);
+    if (signupData.session) window.location.href = "/dashboard";
   }
   return (
     <AuthShell>

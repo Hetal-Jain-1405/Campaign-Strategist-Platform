@@ -3,15 +3,29 @@ import Link from "next/link";
 import { useState } from "react";
 import { Eye, EyeOff, Sparkles } from "lucide-react";
 import { AuthShell } from "@/components/campaign-app";
+import { getSupabaseClient } from "@/lib/supabase";
 export default function LoginPage() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
-  function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const d = new FormData(e.currentTarget);
-    if (!String(d.get("email")).includes("@") || !d.get("password"))
+    const email = String(d.get("email") ?? "").trim();
+    const password = String(d.get("password") ?? "");
+    if (!email.includes("@") || !password) {
       setError("Enter a valid email and password.");
-    else window.location.href = "/dashboard";
+      return;
+    }
+    setError("");
+    const { error } = await getSupabaseClient().auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    window.location.href = "/dashboard";
   }
   return (
     <AuthShell>

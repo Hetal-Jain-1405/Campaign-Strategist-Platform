@@ -4,10 +4,13 @@ import { ArrowLeft, ChevronDown, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppShell, SectionTitle } from "@/components/campaign-app";
-import { createCampaign } from "@/lib/api";
+import { createCampaign, getAccessToken, startCampaignRun } from "@/lib/api";
 export default function NewCampaign() {
   const router = useRouter();
   const [brief, setBrief] = useState("");
+  const [name, setName] = useState("New campaign");
+  const [brandContext, setBrandContext] = useState("");
+  const [marketContext, setMarketContext] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -19,11 +22,25 @@ export default function NewCampaign() {
     setError("");
 
     try {
-      const { id } = await createCampaign(brief.trim());
-      router.push(`/campaigns/${id}/progress`);
-    } catch {
+      const accessToken = getAccessToken();
+      if (!accessToken) {
+        throw new Error("Sign in is required before creating a campaign.");
+      }
+      const campaign = await createCampaign(accessToken, {
+        name: name.trim() || "New campaign",
+        brief: brief.trim(),
+        brand_context: brandContext.trim() || undefined,
+        market_context: marketContext.trim() || undefined,
+      });
+      await startCampaignRun(accessToken, campaign.id);
+      router.push(`/campaigns/${campaign.id}/progress`);
+    } catch (submissionError) {
       setLoading(false);
-      setError("We could not start the campaign. Please try again.");
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : "We could not start the campaign. Please try again.",
+      );
     }
   }
   return (
@@ -47,6 +64,14 @@ export default function NewCampaign() {
           <label className="field-label" htmlFor="brief">
             Campaign brief
           </label>
+          <input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="form-input mb-4"
+            placeholder="Campaign name"
+            required
+          />
           <textarea
             id="brief"
             value={brief}
@@ -64,8 +89,15 @@ export default function NewCampaign() {
                 <input
                   className="form-input"
                   placeholder="Brand or company name"
+                  value={brandContext}
+                  onChange={(e) => setBrandContext(e.target.value)}
                 />
-                <input className="form-input" placeholder="Primary market" />
+                <input
+                  className="form-input"
+                  placeholder="Primary market"
+                  value={marketContext}
+                  onChange={(e) => setMarketContext(e.target.value)}
+                />
               </div>
             </details>
           </div>
