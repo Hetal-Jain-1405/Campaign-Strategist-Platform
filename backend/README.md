@@ -64,7 +64,9 @@ uv run python smoke_test.py
 ```
 
 Set `RESEARCH_MODE=tavily` and `VISUAL_MODE=cloudflare` only when the
-corresponding credentials and services are available.
+corresponding credentials and services are available. Cloudflare-generated
+images are saved in `backend/media/campaigns` and returned as
+`/media/campaigns/<filename>` URLs for the frontend.
 
 Gemini uses the `GEMINI_API_KEY` and `GEMINI_MODEL` settings, but free-tier
 quota is shared by the Google project. If a run reports `Gemini API quota

@@ -49,7 +49,7 @@ def get_chat_model(model_role: str) -> Any:
 
     from langchain_google_genai import ChatGoogleGenerativeAI
 
-    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    model = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
     logger.info("LLM provider ready: role=%s provider=gemini model=%s", model_role, model)
     return ChatGoogleGenerativeAI(
         model=model,

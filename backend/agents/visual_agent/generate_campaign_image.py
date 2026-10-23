@@ -56,4 +56,4 @@ def generate_campaign_image(prompt: str) -> str:
 
     output_path.write_bytes(response.content)
 
-    return str(output_path)
+    return f"/media/campaigns/{filename}"

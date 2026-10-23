@@ -1,6 +1,7 @@
 import os
 import logging
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Annotated, Any
 from uuid import UUID
 
@@ -18,7 +19,7 @@ from api_models import (
     CampaignUpdate,
 )
 
-load_dotenv()
+load_dotenv(Path(__file__).with_name(".env"))
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO").upper(),
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -85,6 +86,13 @@ def _supabase_request(
             timeout=15,
         )
     except requests.RequestException as exc:
+        logger.warning(
+            "Campaign storage request failed: method=%s path=%s error_type=%s error=%s",
+            method,
+            path,
+            type(exc).__name__,
+            exc,
+        )
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Campaign storage service unavailable",
